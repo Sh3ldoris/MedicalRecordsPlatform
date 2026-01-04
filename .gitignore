@@ -1,0 +1,106 @@
+####################################
+# General (all projects)
+####################################
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+####################################
+# Git safety
+####################################
+.git/
+.gitmodules
+
+####################################
+# .NET / MSBuild (ANY project folder)
+####################################
+**/bin/
+**/obj/
+**/[Bb]uild/
+**/[Bb]uilds/
+**/[Bb]uildHost-*/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+*.pdb
+*.dll
+*.exe
+
+####################################
+# Visual Studio / Rider (ANY project)
+####################################
+.vs/
+**/.vs/
+.idea/
+*.DotSettings.user
+_ReSharper*/
+TestResults/
+
+####################################
+# NuGet
+####################################
+**/.nuget/
+**/packages/
+
+####################################
+# ASP.NET Core (API project only, but safe globally)
+####################################
+**/appsettings.Development.local.json
+**/appsettings.Local.json
+**/secrets.json
+
+####################################
+# Entity Framework
+####################################
+**/Migrations/*.Designer.cs
+**/Migrations/*.Snapshot.cs
+
+####################################
+# UNO Platform (ANY standalone UNO project)
+####################################
+# Platform build outputs
+**/Platforms/**/bin/
+**/Platforms/**/obj/
+
+# iOS / macOS
+**/Platforms/iOS/**/DerivedData/
+**/Platforms/iOS/**/build/
+**/*.xcuserstate
+**/*.xcworkspace
+**/*.xcodeproj
+
+# Android (future-proof)
+**/Platforms/Android/.gradle/
+**/Platforms/Android/local.properties
+**/Platforms/Android/**/build/
+
+# Desktop / Skia
+**/Platforms/Skia/**/bin/
+**/Platforms/Skia/**/obj/
+
+####################################
+# Docker (only MedicalRecords has it, but safe)
+####################################
+**/docker-data/
+**/docker-volumes/
+**/.env
+**/*.env
+
+####################################
+# Coverage / reports
+####################################
+**/coverage/
+*.coverage
+*.coveragexml
+
+####################################
+# Editor backups
+####################################
+*~
+*.orig

@@ -1,0 +1,41 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: medical_records_db
+    environment:
+      POSTGRES_USER: medicaluser
+      POSTGRES_PASSWORD: medicalpass123
+      POSTGRES_DB: medicalrecordsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - medical_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medical_records_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=medicalrecordsdb;Username=medicaluser;Password=medicalpass123
+    ports:
+      - "5050:8080"
+    depends_on:
+      - postgres
+    networks:
+      - medical_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  medical_network:
+    driver: bridge
