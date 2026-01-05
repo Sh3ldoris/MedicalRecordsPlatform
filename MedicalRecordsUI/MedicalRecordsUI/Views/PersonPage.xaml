@@ -1,5 +1,4 @@
 ﻿<Page
-    Name="PersonList"
     x:Class="MedicalRecordsUI.Views.PersonPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -53,7 +52,8 @@
         </Border>
 
         <!-- Persons List -->
-        <ListView Grid.Row="1"
+        <ListView x:Name="PersonsListView"
+                   Grid.Row="1"
                    ItemsSource="{Binding Persons}"
                    Visibility="{Binding ShowPersonsList, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <ListView.ItemTemplate>
@@ -90,10 +90,10 @@
                                         Orientation="Horizontal"
                                         Spacing="8">
                                 <Button Content="Edit"
-                                        Command="{Binding DataContext.EditPersonCommand, ElementName=PersonList}"
+                                        Command="{Binding DataContext.EditPersonCommand, ElementName=PersonsListView}"
                                         CommandParameter="{Binding}"/>
                                 <Button Content="Delete"
-                                        Command="{Binding DataContext.DeletePersonCommand, ElementName=PersonList}"
+                                        Command="{Binding DataContext.DeletePersonCommand, ElementName=PersonsListView}"
                                         CommandParameter="{Binding}" />
                             </StackPanel>
                         </Grid>
