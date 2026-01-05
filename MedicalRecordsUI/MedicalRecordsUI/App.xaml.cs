@@ -1,4 +1,9 @@
 using Uno.Resizetizer;
+using MedicalRecordsUI.Services;
+using MedicalRecordsUI.ViewModels;
+using MedicalRecordsUI.Models;
+using Refit;
+using Microsoft.Extensions.Configuration;
 
 namespace MedicalRecordsUI;
 
@@ -14,7 +19,9 @@ public partial class App : Application
     }
 
     protected Window? MainWindow { get; private set; }
-    protected IHost? Host { get; private set; }
+    public IHost? Host { get; private set; }
+    
+    public static IServiceProvider? Services => ((App)Current).Host?.Services;
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -55,6 +62,7 @@ public partial class App : Application
                     configBuilder
                         .EmbeddedSource<App>()
                         .Section<AppConfig>()
+                        .Section<ApiSettings>()
                 )
                 .UseHttp((context, services) =>
                 {
@@ -65,8 +73,20 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    // Register API client using Refit
+                    var apiSettings = context.Configuration.GetSection(nameof(ApiSettings)).Get<ApiSettings>() 
+                        ?? new ApiSettings { BaseUrl = "http://localhost:5050" };
+                    
+                    services.AddRefitClient<IMedicalRecordsApi>()
+                        .ConfigureHttpClient(httpClient =>
+                        {
+                            httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
+                        });
+
+                    // Register ViewModels
+                    services.AddTransient<MainViewModel>();
+                    services.AddTransient<PersonViewModel>();
+                    services.AddTransient<DoctorViewModel>();
                 })
             );
         MainWindow = builder.Window;
