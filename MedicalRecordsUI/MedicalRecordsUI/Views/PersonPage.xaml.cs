@@ -20,7 +20,13 @@ public sealed partial class PersonPage : Page
             DataContext = viewModel;
             
             // Load persons when page is loaded
-            Loaded += async (s, e) => await viewModel.LoadPersonsCommand.ExecuteAsync(null);
+            Loaded += async (s, e) =>
+            {
+                if (viewModel.Persons.Count == 0)
+                {
+                    await viewModel.LoadPersonsCommand.ExecuteAsync(null);
+                }
+            };
         }
     }
 }

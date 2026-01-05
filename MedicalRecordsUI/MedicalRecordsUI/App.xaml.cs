@@ -1,7 +1,5 @@
-using Uno.Resizetizer;
 using MedicalRecordsUI.Services;
 using MedicalRecordsUI.ViewModels;
-using MedicalRecordsUI.Models;
 using Refit;
 using Microsoft.Extensions.Configuration;
 
@@ -20,7 +18,7 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     public IHost? Host { get; private set; }
-    
+
     public static IServiceProvider? Services => ((App)Current).Host?.Services;
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -74,14 +72,11 @@ public partial class App : Application
                 .ConfigureServices((context, services) =>
                 {
                     // Register API client using Refit
-                    var apiSettings = context.Configuration.GetSection(nameof(ApiSettings)).Get<ApiSettings>() 
-                        ?? new ApiSettings { BaseUrl = "http://localhost:5050" };
-                    
+                    var apiSettings = context.Configuration.GetSection(nameof(ApiSettings)).Get<ApiSettings>()
+                                      ?? new ApiSettings { BaseUrl = "http://localhost:5050" };
+
                     services.AddRefitClient<IMedicalRecordsApi>()
-                        .ConfigureHttpClient(httpClient =>
-                        {
-                            httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
-                        });
+                        .ConfigureHttpClient(httpClient => { httpClient.BaseAddress = new Uri(apiSettings.BaseUrl); });
 
                     // Register ViewModels
                     services.AddTransient<MainViewModel>();

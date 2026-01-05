@@ -8,6 +8,7 @@ namespace MedicalRecordsUI.ViewModels;
 public partial class PersonViewModel : ObservableValidator
 {
     private readonly IMedicalRecordsApi _api;
+    private readonly ILogger<PersonViewModel> _logger;
 
     [ObservableProperty] private ObservableCollection<Person> _persons = new();
 
@@ -40,15 +41,44 @@ public partial class PersonViewModel : ObservableValidator
 
     [ObservableProperty] private bool _isEditing;
 
+    [ObservableProperty] private bool _hasErrorMessage;
+    [ObservableProperty] private bool _showPersonsList;
+    [ObservableProperty] private bool _showEmptyState;
+
     [RequiresUnreferencedCode("ObservableValidator uses reflection for DataAnnotations validation.")]
-    public PersonViewModel(IMedicalRecordsApi api)
+    public PersonViewModel(IMedicalRecordsApi api, ILogger<PersonViewModel> logger)
     {
         _api = api;
+        _logger = logger;
+        UpdateVisibilityStates();
+    }
+
+    partial void OnErrorMessageChanged(string value)
+    {
+        HasErrorMessage = !string.IsNullOrWhiteSpace(value);
+        UpdateVisibilityStates();
+    }
+
+    partial void OnIsLoadingChanged(bool value)
+    {
+        UpdateVisibilityStates();
+    }
+
+    partial void OnPersonsChanged(ObservableCollection<Person> value)
+    {
+        UpdateVisibilityStates();
+    }
+
+    private void UpdateVisibilityStates()
+    {
+        ShowPersonsList = !IsLoading && Persons.Count > 0;
+        ShowEmptyState = !IsLoading && Persons.Count == 0;
     }
 
     [RelayCommand]
     private async Task LoadPersonsAsync()
     {
+        _logger.LogWarning("Loading persons!");
         try
         {
             IsLoading = true;
@@ -127,6 +157,7 @@ public partial class PersonViewModel : ObservableValidator
     [RelayCommand]
     private async Task DeletePersonAsync(Person person)
     {
+        _logger.LogWarning("Clicking to delete person!");
         try
         {
             IsLoading = true;
