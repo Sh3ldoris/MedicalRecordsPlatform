@@ -28,6 +28,15 @@ public sealed partial class PersonPage : Page
                 }
             };
         }
+        
+        // Set the xaml context to the ViewModel
+        Loaded += (s, e) =>
+        {
+            if (DataContext is PersonViewModel vm)
+            {
+                vm.XamlRoot = this.XamlRoot;
+            }
+        };
     }
 }
 

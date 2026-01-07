@@ -7,6 +7,8 @@ namespace MedicalRecordsUI.ViewModels;
 
 public partial class PersonViewModel : ObservableValidator
 {
+    public XamlRoot? XamlRoot { get; set; }
+    
     private readonly IMedicalRecordsApi _api;
     private readonly ILogger<PersonViewModel> _logger;
 
@@ -158,6 +160,13 @@ public partial class PersonViewModel : ObservableValidator
     private async Task DeletePersonAsync(Person person)
     {
         _logger.LogWarning("Clicking to delete person!");
+        // Confirm the deletion
+        if (!await this.DisplayConfirmation("Delete person",
+                $"Are you sure you want to delete {person.FirstName} {person.LastName}?"))
+        {
+            return;
+        }
+        
         try
         {
             IsLoading = true;
@@ -215,5 +224,25 @@ public partial class PersonViewModel : ObservableValidator
         }
 
         return true;
+    }
+    
+    private async Task<bool> DisplayConfirmation(
+        string title,
+        string message,
+        string confirmText = "Confirm",
+        string cancelText = "Cancel"
+    ) {
+        var dialog = new ContentDialog
+        {
+            Title = title,
+            Content = message,
+            PrimaryButtonText = confirmText,
+            SecondaryButtonText = cancelText,
+            DefaultButton = ContentDialogButton.Secondary,
+            XamlRoot = XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+        return  result == ContentDialogResult.Primary;
     }
 }
