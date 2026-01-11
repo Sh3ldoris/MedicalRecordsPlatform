@@ -24,7 +24,7 @@ public partial class PersonViewModel : ObservableValidator
     [Required(ErrorMessage = "Last name is required")]
     private string _lastName = string.Empty;
 
-    [ObservableProperty] private DateTime _dateOfBirth = DateTime.Today.AddYears(-30);
+    [ObservableProperty] private DateTimeOffset _dateOfBirth = DateTimeOffset.Now.Date.AddYears(-30);
 
     [ObservableProperty] private string _address = string.Empty;
 
@@ -120,7 +120,7 @@ public partial class PersonViewModel : ObservableValidator
             {
                 FirstName = FirstName,
                 LastName = LastName,
-                DateOfBirth = DateOfBirth,
+                DateOfBirth = DateOfBirth.UtcDateTime,
                 Address = Address,
                 PhoneNumber = PhoneNumber,
                 Email = Email
@@ -156,7 +156,7 @@ public partial class PersonViewModel : ObservableValidator
         SelectedPerson = person;
         FirstName = person.FirstName;
         LastName = person.LastName;
-        DateOfBirth = person.DateOfBirth;
+        DateOfBirth = new DateTimeOffset(person.DateOfBirth);
         Address = person.Address ?? string.Empty;
         PhoneNumber = person.PhoneNumber ?? string.Empty;
         Email = person.Email ?? string.Empty;
@@ -209,7 +209,7 @@ public partial class PersonViewModel : ObservableValidator
     {
         FirstName = string.Empty;
         LastName = string.Empty;
-        DateOfBirth = DateTime.Today.AddYears(-30);
+        DateOfBirth = DateTimeOffset.Now.Date.AddYears(-30);
         Address = string.Empty;
         PhoneNumber = string.Empty;
         Email = string.Empty;
