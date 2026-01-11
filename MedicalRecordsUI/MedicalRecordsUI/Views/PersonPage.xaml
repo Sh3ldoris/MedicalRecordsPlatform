@@ -12,21 +12,126 @@
     <Grid Padding="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,16">
-            <TextBlock Text="Persons"
-                       FontSize="28"
-                       FontWeight="SemiBold" />
-            <TextBlock Text="Manage persons in the system"
-                       FontSize="16"
-                       Opacity="0.7" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Spacing="8">
+                <TextBlock Text="Persons"
+                           FontSize="28"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Manage persons in the system"
+                           FontSize="16"
+                           Opacity="0.7" />
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Content="Create Person"
+                    Command="{Binding ShowFormCommand}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Create/Edit Form -->
+        <Border Grid.Row="1"
+                Background="#2A2A2A"
+                Padding="24"
+                CornerRadius="8"
+                Margin="0,0,0,16"
+                Visibility="{Binding IsFormVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Spacing="16">
+                <TextBlock Text="{Binding FormTitle}"
+                           FontSize="20"
+                           FontWeight="SemiBold" />
+                
+                <Grid ColumnSpacing="16" RowSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- First Name -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="First Name *"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <TextBox Text="{Binding FirstName, Mode=TwoWay}"
+                                 PlaceholderText="Enter first name" />
+                    </StackPanel>
+
+                    <!-- Last Name -->
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Last Name *"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <TextBox Text="{Binding LastName, Mode=TwoWay}"
+                                 PlaceholderText="Enter last name" />
+                    </StackPanel>
+
+                    <!-- Date of Birth -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Date of Birth"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <DatePicker Date="{Binding DateOfBirth, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Email -->
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Email"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <TextBox Text="{Binding Email, Mode=TwoWay}"
+                                 PlaceholderText="Enter email address"
+                                 InputScope="EmailSmtpAddress" />
+                    </StackPanel>
+
+                    <!-- Phone Number -->
+                    <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Phone Number"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <TextBox Text="{Binding PhoneNumber, Mode=TwoWay}"
+                                 PlaceholderText="Enter phone number"
+                                 InputScope="TelephoneNumber" />
+                    </StackPanel>
+
+                    <!-- Address -->
+                    <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Address"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+                        <TextBox Text="{Binding Address, Mode=TwoWay}"
+                                 PlaceholderText="Enter address" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Form Actions -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="8">
+                    <Button Content="Cancel"
+                            Command="{Binding CancelEditCommand}" />
+                    <Button Content="{Binding SaveButtonText}"
+                            Command="{Binding AddPersonCommand}"
+                            Style="{StaticResource AccentButtonStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
         <!-- Loading Indicator -->
-        <ProgressRing Grid.Row="1"
+        <ProgressRing Grid.Row="2"
                       IsActive="{Binding IsLoading}"
                       Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                       HorizontalAlignment="Center"
@@ -35,7 +140,7 @@
                       Height="50" />
 
         <!-- Error Message -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 Background="#FF4444"
                 Padding="16"
                 CornerRadius="8"
@@ -52,7 +157,7 @@
 
         <!-- Persons List -->
         <ListView x:Name="PersonsListView"
-                   Grid.Row="1"
+                   Grid.Row="2"
                    ItemsSource="{Binding Persons}"
                    Visibility="{Binding ShowPersonsList, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <ListView.ItemTemplate>
@@ -102,7 +207,7 @@
         </ListView>
 
         <!-- Empty State -->
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="2"
                    Text="No persons found."
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"

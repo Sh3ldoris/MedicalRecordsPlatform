@@ -40,12 +40,18 @@ public partial class PersonViewModel : ObservableValidator
     [ObservableProperty] private string _errorMessage = string.Empty;
 
     [ObservableProperty] private Person? _selectedPerson;
-
-    [ObservableProperty] private bool _isEditing;
-
+    
+    [NotifyPropertyChangedFor(nameof(FormTitle))]
+    [NotifyPropertyChangedFor(nameof(SaveButtonText))]
+    [ObservableProperty]
+    private bool _isEditing;
     [ObservableProperty] private bool _hasErrorMessage;
     [ObservableProperty] private bool _showPersonsList;
     [ObservableProperty] private bool _showEmptyState;
+    [ObservableProperty] private bool _isFormVisible;
+    
+    public string FormTitle => IsEditing ? "Edit Person" : "Create Person";
+    public string SaveButtonText => IsEditing ? "Update" : "Create";
 
     [RequiresUnreferencedCode("ObservableValidator uses reflection for DataAnnotations validation.")]
     public PersonViewModel(IMedicalRecordsApi api, ILogger<PersonViewModel> logger)
@@ -132,6 +138,7 @@ public partial class PersonViewModel : ObservableValidator
 
             await LoadPersonsAsync();
             ClearForm();
+            IsFormVisible = false;
         }
         catch (Exception ex)
         {
@@ -154,6 +161,7 @@ public partial class PersonViewModel : ObservableValidator
         PhoneNumber = person.PhoneNumber ?? string.Empty;
         Email = person.Email ?? string.Empty;
         IsEditing = true;
+        IsFormVisible = true;
     }
 
     [RelayCommand]
@@ -185,6 +193,13 @@ public partial class PersonViewModel : ObservableValidator
     }
 
     [RelayCommand]
+    private void ShowForm()
+    {
+        ClearForm();
+        IsFormVisible = true;
+    }
+
+    [RelayCommand]
     private void CancelEdit()
     {
         ClearForm();
@@ -201,6 +216,7 @@ public partial class PersonViewModel : ObservableValidator
         SelectedPerson = null;
         IsEditing = false;
         ErrorMessage = string.Empty;
+        IsFormVisible = false;
     }
 
     private bool ValidateInput()
